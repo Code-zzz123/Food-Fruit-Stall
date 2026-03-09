@@ -228,21 +228,22 @@ h1 {
 }
 
 .list-item {
-  background: var(--panel-light);
-  border: 1px solid transparent;
+  background: linear-gradient(140deg, #1e4f46, #2b8a78);
+  border: 1px solid #1a5f53;
   border-radius: 12px;
   padding: 8px 10px;
   text-align: left;
-  color: var(--text);
+  color: #ffffff;
   cursor: pointer;
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   width: 100%;
   max-width: 280px;
 }
 
 .list-item:hover {
-  border-color: var(--accent);
+  border-color: #2fb394;
   transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(30, 79, 70, 0.22);
 }
 
 .list-item-row {
@@ -263,7 +264,7 @@ h1 {
 }
 
 .list-meta {
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.88);
   font-size: 11px;
   line-height: 1.2;
 }
