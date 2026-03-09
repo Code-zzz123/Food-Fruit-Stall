@@ -9,6 +9,13 @@ const foodViewEl = document.getElementById("foodView");
 const buyerViewEl = document.getElementById("buyerView");
 const authEmailEl = document.getElementById("authEmail");
 const authPasswordEl = document.getElementById("authPassword");
+const authModalEl = document.getElementById("authModal");
+const authModalTitleEl = document.getElementById("authModalTitle");
+const authModalFormEl = document.getElementById("authModalForm");
+const authSubmitBtnEl = document.getElementById("authSubmitBtn");
+const authCancelBtnEl = document.getElementById("authCancelBtn");
+const authSwitchTextEl = document.getElementById("authSwitchText");
+const authSwitchBtnEl = document.getElementById("authSwitchBtn");
 const loginBtnEl = document.getElementById("loginBtn");
 const signupBtnEl = document.getElementById("signupBtn");
 const logoutBtnEl = document.getElementById("logoutBtn");
@@ -25,6 +32,7 @@ const buyerFruitSelectEl = document.getElementById("buyerFruitNameInput");
 const recordsById = new Map();
 const buyersById = new Map();
 let currentView = "food";
+let authMode = "login";
 const AUTH_TOKEN_KEY = "supabase_access_token";
 
 refreshBtn.addEventListener("click", () => {
@@ -42,9 +50,18 @@ createFormEl.addEventListener("submit", handleCreateRecord);
 createBuyerFormEl.addEventListener("submit", handleCreateBuyer);
 tabFoodEl.addEventListener("click", () => switchView("food"));
 tabBuyerEl.addEventListener("click", () => switchView("buyer"));
-loginBtnEl.addEventListener("click", () => handleAuth("login"));
-signupBtnEl.addEventListener("click", () => handleAuth("signup"));
+loginBtnEl.addEventListener("click", () => openAuthModal("login"));
+signupBtnEl.addEventListener("click", () => openAuthModal("signup"));
 logoutBtnEl.addEventListener("click", handleLogout);
+authCancelBtnEl.addEventListener("click", closeAuthModal);
+authSwitchBtnEl.addEventListener("click", () => {
+  authMode = authMode === "signup" ? "login" : "signup";
+  updateAuthModalUi();
+});
+authModalFormEl.addEventListener("submit", handleAuthSubmit);
+authModalEl.addEventListener("click", (event) => {
+  if (event.target === authModalEl) closeAuthModal();
+});
 
 async function loadRecords() {
   if (!isAuthenticated()) {
@@ -614,9 +631,7 @@ async function apiFetch(path, options = {}) {
   }
 }
 
-async function handleAuth(mode) {
-  const email = authEmailEl.value.trim();
-  const password = authPasswordEl.value;
+async function handleAuth(mode, email, password) {
   if (!email || !password) {
     authStatusEl.textContent = "Email and password are required.";
     return;
@@ -648,11 +663,39 @@ async function handleAuth(mode) {
     setAuthToken(token);
     authPasswordEl.value = "";
     updateAuthUi(data?.user?.email || email);
+    closeAuthModal();
     switchView("food");
     await loadRecords();
   } catch (err) {
     authStatusEl.textContent = err.message || "Authentication failed.";
   }
+}
+
+function openAuthModal(mode) {
+  authMode = mode;
+  updateAuthModalUi();
+  authModalEl.classList.remove("hidden");
+  authEmailEl.focus();
+}
+
+function closeAuthModal() {
+  authModalEl.classList.add("hidden");
+  authPasswordEl.value = "";
+}
+
+async function handleAuthSubmit(event) {
+  event.preventDefault();
+  const email = authEmailEl.value.trim();
+  const password = authPasswordEl.value;
+  await handleAuth(authMode, email, password);
+}
+
+function updateAuthModalUi() {
+  const isSignup = authMode === "signup";
+  authModalTitleEl.textContent = isSignup ? "Sign Up" : "Login";
+  authSubmitBtnEl.textContent = isSignup ? "Create Account" : "Login";
+  authSwitchTextEl.textContent = isSignup ? "Already have an account?" : "New here?";
+  authSwitchBtnEl.textContent = isSignup ? "Login instead" : "Create account";
 }
 
 function looksLikeEmail(value) {
@@ -666,8 +709,6 @@ async function handleLogout() {
 
 function updateAuthUi(email) {
   const loggedIn = isAuthenticated();
-  authEmailEl.classList.toggle("hidden", loggedIn);
-  authPasswordEl.classList.toggle("hidden", loggedIn);
   loginBtnEl.classList.toggle("hidden", loggedIn);
   signupBtnEl.classList.toggle("hidden", loggedIn);
   logoutBtnEl.classList.toggle("hidden", !loggedIn);
@@ -678,7 +719,7 @@ function updateAuthUi(email) {
   buyerViewEl.classList.toggle("active", false);
   authEmailEl.disabled = loggedIn;
   authPasswordEl.disabled = loggedIn;
-  authStatusEl.textContent = loggedIn ? `Logged in${email ? ` as ${email}` : ""}` : "Please log in.";
+  authStatusEl.textContent = loggedIn ? `Logged in${email ? ` as ${email}` : ""}` : "Log in to view your records";
   if (loggedIn) {
     switchView(currentView);
   }

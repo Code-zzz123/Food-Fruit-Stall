@@ -16,8 +16,6 @@
       <div class="header-actions">
         <span id="authStatus" class="muted auth-status-line"></span>
         <div id="authBox" class="auth-box">
-          <input id="authEmail" type="text" placeholder="Email" />
-          <input id="authPassword" type="password" placeholder="Password" />
           <button id="loginBtn" class="btn btn-sm" type="button">Login</button>
           <button id="signupBtn" class="btn btn-sm btn-alt" type="button">Sign Up</button>
         </div>
@@ -34,22 +32,47 @@
 
     <section id="landingView" class="landing">
       <article class="landing-hero">
-        <h2>Welcome to Fruit Stall Portal</h2>
-        <p>Manage your fruit catalog, track buyers, and keep product details synced from Supabase in one place.</p>
+        <div>
+          <h2>Welcome to Fruit Stall Portal</h2>
+          <p>Manage your fruit catalog, track buyers, and keep product details synced from Supabase in one place.</p>
+        </div>
+        <div class="powered-by">
+          <span class="powered-by-text">Powered by</span>
+          <img
+            class="supabase-logo"
+            src="https://cdn.simpleicons.org/supabase/3ECF8E"
+            alt="Supabase logo"
+            loading="lazy"
+          />
+        </div>
       </article>
-      <div class="landing-grid">
-        <article class="landing-card">
-          <h3>Catalog View</h3>
-          <p>Show fruit names, pictures, pricing, and where to buy links in a clean storefront-style list.</p>
-        </article>
-        <article class="landing-card">
-          <h3>Buyer Tracking</h3>
-          <p>Link buyers to fruits and monitor purchase quantities without manual spreadsheet matching.</p>
-        </article>
-        <article class="landing-card">
-          <h3>Secure Access</h3>
-          <p>Log in with Supabase Auth to protect inventory and buyer data before anyone can edit content.</p>
-        </article>
+      <div class="landing-marquee">
+        <div class="landing-track">
+          <article class="landing-card">
+            <h3>Catalog View</h3>
+            <p>Show fruit names, pictures, pricing, and where to buy links in a clean storefront-style list.</p>
+          </article>
+          <article class="landing-card">
+            <h3>Buyer Tracking</h3>
+            <p>Link buyers to fruits and monitor purchase quantities without manual spreadsheet matching.</p>
+          </article>
+          <article class="landing-card">
+            <h3>Secure Access</h3>
+            <p>Log in with Supabase Auth to protect inventory and buyer data before anyone can edit content.</p>
+          </article>
+          <article class="landing-card" aria-hidden="true">
+            <h3>Catalog View</h3>
+            <p>Show fruit names, pictures, pricing, and where to buy links in a clean storefront-style list.</p>
+          </article>
+          <article class="landing-card" aria-hidden="true">
+            <h3>Buyer Tracking</h3>
+            <p>Link buyers to fruits and monitor purchase quantities without manual spreadsheet matching.</p>
+          </article>
+          <article class="landing-card" aria-hidden="true">
+            <h3>Secure Access</h3>
+            <p>Log in with Supabase Auth to protect inventory and buyer data before anyone can edit content.</p>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -112,6 +135,26 @@
       </section>
     </section>
   </main>
+
+  <div id="authModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+    <div class="modal-card">
+      <h3 id="authModalTitle">Login</h3>
+      <form id="authModalForm" class="create-form">
+        <label class="input-label" for="authEmail">Email</label>
+        <input id="authEmail" type="text" placeholder="your@email.com" required />
+        <label class="input-label" for="authPassword">Password</label>
+        <input id="authPassword" type="password" placeholder="Password" required />
+        <div class="modal-switch">
+          <span id="authSwitchText" class="muted"></span>
+          <button id="authSwitchBtn" class="btn-link" type="button"></button>
+        </div>
+        <div class="modal-actions">
+          <button id="authSubmitBtn" class="btn btn-sm" type="submit">Continue</button>
+          <button id="authCancelBtn" class="btn btn-sm btn-alt" type="button">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="/app.js"></script>
 </body>
