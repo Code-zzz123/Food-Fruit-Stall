@@ -99,11 +99,11 @@ h1 {
 
 .landing {
   display: none;
-  background: linear-gradient(145deg, rgba(255, 250, 240, 0.97), rgba(243, 230, 195, 0.9));
-  border: 1px solid var(--border);
+  background: linear-gradient(135deg, #121212 0%, #7d7d7d 55%, #ececec 100%);
+  border: 1px solid #9a9a9a;
   border-radius: 18px;
   padding: 24px;
-  box-shadow: 0 14px 30px rgba(126, 107, 54, 0.18);
+  box-shadow: 0 14px 30px rgba(32, 32, 32, 0.22);
 }
 
 .landing.active {
@@ -113,6 +113,8 @@ h1 {
 .landing-hero h2 {
   margin: 0 0 8px;
   font-size: 28px;
+  color: #f4fff9;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
 .landing-hero {
@@ -144,7 +146,9 @@ h1 {
 .landing-hero p {
   margin: 0;
   max-width: 720px;
-  color: var(--muted);
+  color: rgba(245, 250, 247, 0.92);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+  font-weight: 500;
 }
 
 .supabase-logo {
@@ -158,6 +162,12 @@ h1 {
 .landing-marquee {
   margin-top: 18px;
   overflow: hidden;
+  position: relative;
+}
+
+.landing-marquee::before,
+.landing-marquee::after {
+  content: none;
 }
 
 .landing-track {
@@ -168,22 +178,24 @@ h1 {
 }
 
 .landing-card {
-  background: #fffdf6;
-  border: 1px solid var(--border);
+  background: linear-gradient(140deg, #1e4f46, #2b8a78);
+  border: 1px solid #1a5f53;
   border-radius: 12px;
   padding: 14px;
   width: 300px;
   flex: 0 0 auto;
+  box-shadow: 0 10px 18px rgba(30, 79, 70, 0.22);
 }
 
 .landing-card h3 {
   margin: 0 0 6px;
   font-size: 16px;
+  color: #ffffff;
 }
 
 .landing-card p {
   margin: 0;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 14px;
   line-height: 1.35;
 }
