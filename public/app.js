@@ -52,7 +52,13 @@ async function loadRecords() {
     recordsListEl.innerHTML = "";
     recordsById.clear();
 
-    rows.forEach((row) => {
+    const sortedRows = [...rows].sort((a, b) => {
+      const aName = String(getRecordTitle(a, getRecordId(a) ?? "")).toLowerCase();
+      const bName = String(getRecordTitle(b, getRecordId(b) ?? "")).toLowerCase();
+      return aName.localeCompare(bName);
+    });
+
+    sortedRows.forEach((row) => {
       const recordId = getRecordId(row);
       if (recordId === null || recordId === undefined) {
         return;
@@ -87,7 +93,7 @@ async function loadRecords() {
       });
       recordsListEl.appendChild(item);
     });
-    populateBuyerFruitOptions(rows);
+    populateBuyerFruitOptions(sortedRows);
 
     if (!recordsListEl.children.length) {
       recordsListEl.textContent = "No usable records found. Check SUPABASE_ID_COLUMN and your table data.";
@@ -378,7 +384,13 @@ async function loadBuyers() {
     buyersListEl.innerHTML = "";
     buyersById.clear();
 
-    rows.forEach((row, index) => {
+    const sortedRows = [...rows].sort((a, b) => {
+      const aName = String(a["Buyer Name"] || a.buyer_name || "").toLowerCase();
+      const bName = String(b["Buyer Name"] || b.buyer_name || "").toLowerCase();
+      return aName.localeCompare(bName);
+    });
+
+    sortedRows.forEach((row, index) => {
       const key = String(row.id ?? row["Buyer Name"] ?? `buyer-${index}`);
       buyersById.set(key, row);
 
