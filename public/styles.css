@@ -1,0 +1,289 @@
+:root {
+  --bg: #f5efe2;
+  --panel: #fffaf0;
+  --panel-light: #fff2d5;
+  --text: #1f1f1f;
+  --muted: #67604f;
+  --accent: #2b8a78;
+  --accent-dark: #226d5f;
+  --border: #dbcfae;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+  background: radial-gradient(circle at top right, #fde8bb, #f5efe2 55%);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 28px 20px 48px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tabs {
+  display: inline-flex;
+  background: #efe3c5;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px;
+}
+
+.tab-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tab-btn.active {
+  background: #fffaf0;
+  color: var(--text);
+}
+
+h1 {
+  margin: 0 0 6px;
+  font-size: 30px;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 18px;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: grid;
+}
+
+.panel {
+  background: rgba(255, 250, 240, 0.94);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  min-height: 220px;
+  box-shadow: 0 14px 30px rgba(126, 107, 54, 0.18);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
+.list-item {
+  background: var(--panel-light);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.list-item:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.list-item-row {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.list-item-content {
+  min-width: 0;
+}
+
+.list-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.list-meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.kv-row {
+  margin-bottom: 14px;
+}
+
+.label {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.value.pre {
+  margin: 0;
+  white-space: pre-wrap;
+  background: #fffdf6;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.value.link-value {
+  display: inline-block;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fffdf6;
+  color: var(--accent-dark);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.thumb {
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #f1e8cf;
+}
+
+.thumb-sm {
+  width: 72px;
+  height: 56px;
+}
+
+.thumb-lg {
+  width: min(320px, 100%);
+  max-height: 220px;
+  display: block;
+}
+
+.btn {
+  background: var(--accent);
+  border: none;
+  color: #f7f7f7;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn:hover {
+  background: var(--accent-dark);
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 8px 0 14px;
+}
+
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.create-form input {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fffdf6;
+  color: var(--text);
+}
+
+.input-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.create-form .btn {
+  margin-top: 6px;
+}
+
+.buyers-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.buyers-list li {
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.buyer-name {
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .list-item-row {
+    grid-template-columns: 58px 1fr;
+  }
+
+  .thumb-sm {
+    width: 58px;
+    height: 46px;
+  }
+}
