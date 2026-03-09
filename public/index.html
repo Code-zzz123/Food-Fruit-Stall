@@ -24,7 +24,7 @@
 
     <section id="foodView" class="grid view active">
       <aside class="panel">
-        <h2>Records</h2>
+        <h2>Fruits</h2>
         <div id="recordsList" class="list">Loading...</div>
         <hr class="divider" />
         <h3>Add Record</h3>
@@ -63,7 +63,9 @@
           <input id="buyerNameInput" type="text" required />
 
           <label class="input-label" for="buyerFruitNameInput">Fruit Name</label>
-          <input id="buyerFruitNameInput" type="text" required />
+          <select id="buyerFruitNameInput" required>
+            <option value="">Select a fruit...</option>
+          </select>
 
           <label class="input-label" for="buyerQuantityInput">Quantity Bought</label>
           <input id="buyerQuantityInput" type="number" min="1" step="1" />

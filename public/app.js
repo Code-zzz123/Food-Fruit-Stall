@@ -13,6 +13,7 @@ const buyerDetailEl = document.getElementById("buyerDetail");
 const createBuyerFormEl = document.getElementById("createBuyerForm");
 const createBuyerStatusEl = document.getElementById("createBuyerStatus");
 const createBuyerBtnEl = document.getElementById("createBuyerBtn");
+const buyerFruitSelectEl = document.getElementById("buyerFruitNameInput");
 const recordsById = new Map();
 const buyersById = new Map();
 let currentView = "food";
@@ -44,6 +45,7 @@ async function loadRecords() {
 
     if (!Array.isArray(rows) || !rows.length) {
       recordsListEl.textContent = "No records found in this table.";
+      populateBuyerFruitOptions([]);
       return;
     }
 
@@ -85,6 +87,7 @@ async function loadRecords() {
       });
       recordsListEl.appendChild(item);
     });
+    populateBuyerFruitOptions(rows);
 
     if (!recordsListEl.children.length) {
       recordsListEl.textContent = "No usable records found. Check SUPABASE_ID_COLUMN and your table data.";
@@ -452,7 +455,7 @@ async function handleCreateBuyer(event) {
 
 function buildCreateBuyerPayload() {
   const buyerName = document.getElementById("buyerNameInput").value.trim();
-  const fruitName = document.getElementById("buyerFruitNameInput").value.trim();
+  const fruitName = buyerFruitSelectEl.value.trim();
   const quantityRaw = document.getElementById("buyerQuantityInput").value.trim();
 
   const payload = {
@@ -466,6 +469,30 @@ function buildCreateBuyerPayload() {
   }
 
   return payload;
+}
+
+function populateBuyerFruitOptions(rows) {
+  const currentValue = buyerFruitSelectEl.value;
+  const fruits = Array.from(
+    new Set(
+      (rows || [])
+        .map((row) => getFruitName(row, ""))
+        .map((name) => String(name || "").trim())
+        .filter(Boolean)
+    )
+  ).sort((a, b) => a.localeCompare(b));
+
+  buyerFruitSelectEl.innerHTML = `<option value="">Select a fruit...</option>`;
+  fruits.forEach((fruit) => {
+    const option = document.createElement("option");
+    option.value = fruit;
+    option.textContent = fruit;
+    buyerFruitSelectEl.appendChild(option);
+  });
+
+  if (currentValue && fruits.includes(currentValue)) {
+    buyerFruitSelectEl.value = currentValue;
+  }
 }
 
 async function renderBuyersMarkup(fruitName) {
