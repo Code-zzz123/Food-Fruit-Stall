@@ -386,7 +386,6 @@ async function loadBuyers() {
       item.className = "list-item";
       item.innerHTML = `
         <div class="list-title">${escapeHtml(String(buyerName))}</div>
-        ${fruitName ? `<div class="list-meta">Fruit: ${escapeHtml(String(fruitName))}</div>` : ""}
       `;
       item.addEventListener("click", () => renderBuyerDetail(key));
       buyersListEl.appendChild(item);
