@@ -8,6 +8,7 @@ A simple web app to view records from a Supabase table.
 - Shows full field-by-field details for a selected record
 - Lets you add new records from the webpage
 - Includes separate `Food` and `Buyer` pages via clickable header tabs
+- Supports email/password login and signup with Supabase Auth
 
 ## Requirements
 - Node.js 18+
@@ -50,7 +51,8 @@ Set these in `.env`:
 
 ## Notes
 
-- Your table should be readable with your Supabase policies (RLS/policies).
-- To create records from the webpage, add an INSERT policy for the `anon` role.
+- Your tables should be readable with Supabase RLS policies for the `authenticated` role.
+- To create records from the webpage, add INSERT policies for the `authenticated` role.
 - To show buyers in the details pane, set `SUPABASE_BUYERS_TABLE` and ensure SELECT policy allows reading that table.
 - If your ID column is not `id`, set `SUPABASE_ID_COLUMN`.
+- Auth is now required for API calls. Log in from the header using Supabase Auth credentials.

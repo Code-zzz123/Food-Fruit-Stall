@@ -1,10 +1,18 @@
 const recordsListEl = document.getElementById("recordsList");
 const detailEl = document.getElementById("recordDetail");
 const refreshBtn = document.getElementById("refreshBtn");
+const tabNavEl = document.getElementById("tabNav");
 const tabFoodEl = document.getElementById("tabFood");
 const tabBuyerEl = document.getElementById("tabBuyer");
+const landingViewEl = document.getElementById("landingView");
 const foodViewEl = document.getElementById("foodView");
 const buyerViewEl = document.getElementById("buyerView");
+const authEmailEl = document.getElementById("authEmail");
+const authPasswordEl = document.getElementById("authPassword");
+const loginBtnEl = document.getElementById("loginBtn");
+const signupBtnEl = document.getElementById("signupBtn");
+const logoutBtnEl = document.getElementById("logoutBtn");
+const authStatusEl = document.getElementById("authStatus");
 const createFormEl = document.getElementById("createForm");
 const createStatusEl = document.getElementById("createStatus");
 const createBtnEl = document.getElementById("createBtn");
@@ -17,8 +25,13 @@ const buyerFruitSelectEl = document.getElementById("buyerFruitNameInput");
 const recordsById = new Map();
 const buyersById = new Map();
 let currentView = "food";
+const AUTH_TOKEN_KEY = "supabase_access_token";
 
 refreshBtn.addEventListener("click", () => {
+  if (!isAuthenticated()) {
+    renderAuthRequired();
+    return;
+  }
   if (currentView === "buyer") {
     loadBuyers();
   } else {
@@ -29,13 +42,20 @@ createFormEl.addEventListener("submit", handleCreateRecord);
 createBuyerFormEl.addEventListener("submit", handleCreateBuyer);
 tabFoodEl.addEventListener("click", () => switchView("food"));
 tabBuyerEl.addEventListener("click", () => switchView("buyer"));
+loginBtnEl.addEventListener("click", () => handleAuth("login"));
+signupBtnEl.addEventListener("click", () => handleAuth("signup"));
+logoutBtnEl.addEventListener("click", handleLogout);
 
 async function loadRecords() {
+  if (!isAuthenticated()) {
+    renderAuthRequired();
+    return;
+  }
   recordsListEl.textContent = "Loading...";
   detailEl.innerHTML = "<div class='muted'>Select a record.</div>";
 
   try {
-    const response = await fetch("/api/entries?limit=100");
+    const response = await apiFetch("/api/entries?limit=100");
     const rows = await response.json();
 
     if (!response.ok) {
@@ -104,6 +124,7 @@ async function loadRecords() {
 }
 
 function switchView(view) {
+  if (!isAuthenticated()) return;
   const isFood = view === "food";
   currentView = isFood ? "food" : "buyer";
   tabFoodEl.classList.toggle("active", isFood);
@@ -119,6 +140,10 @@ function switchView(view) {
 }
 
 async function renderRecordDetail(recordKey) {
+  if (!isAuthenticated()) {
+    renderAuthRequired();
+    return;
+  }
   const row = recordsById.get(recordKey);
   if (!row) {
     detailEl.textContent = "Record not found.";
@@ -287,6 +312,10 @@ function escapeHtml(str) {
 
 async function handleCreateRecord(event) {
   event.preventDefault();
+  if (!isAuthenticated()) {
+    renderAuthRequired();
+    return;
+  }
   createStatusEl.textContent = "";
 
   const payload = buildCreatePayload();
@@ -299,7 +328,7 @@ async function handleCreateRecord(event) {
     createBtnEl.disabled = true;
     createStatusEl.textContent = "Adding record...";
 
-    const response = await fetch("/api/entries", {
+    const response = await apiFetch("/api/entries", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -364,11 +393,15 @@ function getPictureUrl(row) {
 }
 
 async function loadBuyers() {
+  if (!isAuthenticated()) {
+    renderAuthRequired();
+    return;
+  }
   buyersListEl.textContent = "Loading...";
   buyerDetailEl.innerHTML = "<div class='muted'>Select a buyer.</div>";
 
   try {
-    const response = await fetch("/api/buyers");
+    const response = await apiFetch("/api/buyers");
     const rows = await response.json();
 
     if (!response.ok) {
@@ -431,6 +464,10 @@ function renderBuyerDetail(key) {
 
 async function handleCreateBuyer(event) {
   event.preventDefault();
+  if (!isAuthenticated()) {
+    renderAuthRequired();
+    return;
+  }
   createBuyerStatusEl.textContent = "";
 
   const payload = buildCreateBuyerPayload();
@@ -443,7 +480,7 @@ async function handleCreateBuyer(event) {
     createBuyerBtnEl.disabled = true;
     createBuyerStatusEl.textContent = "Adding buyer...";
 
-    const response = await fetch("/api/buyers", {
+    const response = await apiFetch("/api/buyers", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -509,7 +546,7 @@ function populateBuyerFruitOptions(rows) {
 
 async function renderBuyersMarkup(fruitName) {
   try {
-    const response = await fetch(`/api/buyers?fruitName=${encodeURIComponent(String(fruitName || "").trim())}`);
+    const response = await apiFetch(`/api/buyers?fruitName=${encodeURIComponent(String(fruitName || "").trim())}`);
     const buyers = await response.json();
 
     if (!response.ok) {
@@ -534,6 +571,149 @@ async function renderBuyersMarkup(fruitName) {
   }
 }
 
+function isAuthenticated() {
+  return !!getAuthToken();
+}
+
+function getAuthToken() {
+  const raw = localStorage.getItem(AUTH_TOKEN_KEY) || "";
+  const token = String(raw).trim();
+  // Basic JWT-like format check to avoid malformed Authorization header values.
+  if (!token || !/^[A-Za-z0-9._-]+\.[A-Za-z0-9._-]+\.[A-Za-z0-9._-]+$/.test(token)) {
+    return "";
+  }
+  return token;
+}
+
+function setAuthToken(token) {
+  localStorage.setItem(AUTH_TOKEN_KEY, token);
+}
+
+function clearAuthToken() {
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+}
+
+async function apiFetch(path, options = {}) {
+  const token = getAuthToken();
+  const headers = {
+    ...(options.headers || {}),
+  };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  try {
+    return await fetch(path, { ...options, headers });
+  } catch (err) {
+    const message = String(err?.message || "");
+    if (message.toLowerCase().includes("expected pattern")) {
+      clearAuthToken();
+      updateAuthUi("");
+      throw new Error("Session token became invalid. Please log in again.");
+    }
+    throw err;
+  }
+}
+
+async function handleAuth(mode) {
+  const email = authEmailEl.value.trim();
+  const password = authPasswordEl.value;
+  if (!email || !password) {
+    authStatusEl.textContent = "Email and password are required.";
+    return;
+  }
+  if (!looksLikeEmail(email)) {
+    authStatusEl.textContent = "Please enter a valid email address.";
+    return;
+  }
+
+  try {
+    authStatusEl.textContent = mode === "signup" ? "Creating account..." : "Logging in...";
+    const response = await fetch(mode === "signup" ? "/api/auth/signup" : "/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      authStatusEl.textContent = data?.error || "Authentication failed.";
+      return;
+    }
+
+    const token = data?.access_token || "";
+    if (!token) {
+      authStatusEl.textContent = "No access token returned.";
+      return;
+    }
+
+    setAuthToken(token);
+    authPasswordEl.value = "";
+    updateAuthUi(data?.user?.email || email);
+    switchView("food");
+    await loadRecords();
+  } catch (err) {
+    authStatusEl.textContent = err.message || "Authentication failed.";
+  }
+}
+
+function looksLikeEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || "").trim());
+}
+
+async function handleLogout() {
+  clearAuthToken();
+  updateAuthUi("");
+}
+
+function updateAuthUi(email) {
+  const loggedIn = isAuthenticated();
+  authEmailEl.classList.toggle("hidden", loggedIn);
+  authPasswordEl.classList.toggle("hidden", loggedIn);
+  loginBtnEl.classList.toggle("hidden", loggedIn);
+  signupBtnEl.classList.toggle("hidden", loggedIn);
+  logoutBtnEl.classList.toggle("hidden", !loggedIn);
+  tabNavEl.classList.toggle("hidden", !loggedIn);
+  refreshBtn.classList.toggle("hidden", !loggedIn);
+  landingViewEl.classList.toggle("active", !loggedIn);
+  foodViewEl.classList.toggle("active", false);
+  buyerViewEl.classList.toggle("active", false);
+  authEmailEl.disabled = loggedIn;
+  authPasswordEl.disabled = loggedIn;
+  authStatusEl.textContent = loggedIn ? `Logged in${email ? ` as ${email}` : ""}` : "Please log in.";
+  if (loggedIn) {
+    switchView(currentView);
+  }
+}
+
+function renderAuthRequired() {
+  recordsListEl.textContent = "Please log in to view fruits.";
+  detailEl.innerHTML = "<div class='muted'>Log in to view details.</div>";
+  buyersListEl.textContent = "Please log in to view buyers.";
+  buyerDetailEl.innerHTML = "<div class='muted'>Log in to view details.</div>";
+}
+
+async function restoreSession() {
+  const token = getAuthToken();
+  if (!token) {
+    updateAuthUi("");
+    return;
+  }
+
+  try {
+    const response = await apiFetch("/api/auth/session");
+    if (!response.ok) {
+      clearAuthToken();
+      updateAuthUi("");
+      return;
+    }
+    const data = await response.json();
+    updateAuthUi(data?.user?.email || "");
+    await loadRecords();
+  } catch {
+    clearAuthToken();
+    updateAuthUi("");
+  }
+}
+
 function getBuyerTitle(row) {
   const key = ["Buyer Name", "buyer_name", "name", "email", "id"].find((k) => {
     return row[k] !== undefined && row[k] !== null && String(row[k]).trim() !== "";
@@ -548,5 +728,4 @@ function getBuyerMeta(row) {
   return metaKey ? String(row[metaKey]) : "";
 }
 
-loadBuyers();
-switchView("food");
+restoreSession();

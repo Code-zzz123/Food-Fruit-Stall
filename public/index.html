@@ -14,15 +14,46 @@
         <p class="subtitle">View records stored in your Supabase table.</p>
       </div>
       <div class="header-actions">
-        <nav class="tabs" aria-label="Pages">
-          <button id="tabFood" class="tab-btn active" type="button">Food</button>
-          <button id="tabBuyer" class="tab-btn" type="button">Buyer</button>
-        </nav>
-        <button id="refreshBtn" class="btn">Refresh</button>
+        <span id="authStatus" class="muted auth-status-line"></span>
+        <div id="authBox" class="auth-box">
+          <input id="authEmail" type="text" placeholder="Email" />
+          <input id="authPassword" type="password" placeholder="Password" />
+          <button id="loginBtn" class="btn btn-sm" type="button">Login</button>
+          <button id="signupBtn" class="btn btn-sm btn-alt" type="button">Sign Up</button>
+        </div>
+        <div class="header-controls">
+          <nav id="tabNav" class="tabs hidden" aria-label="Pages">
+            <button id="tabFood" class="tab-btn active" type="button">Food</button>
+            <button id="tabBuyer" class="tab-btn" type="button">Buyer</button>
+          </nav>
+          <button id="refreshBtn" class="btn hidden">Refresh</button>
+          <button id="logoutBtn" class="btn btn-sm btn-danger hidden" type="button">Logout</button>
+        </div>
       </div>
     </header>
 
-    <section id="foodView" class="grid view active">
+    <section id="landingView" class="landing">
+      <article class="landing-hero">
+        <h2>Welcome to Fruit Stall Portal</h2>
+        <p>Manage your fruit catalog, track buyers, and keep product details synced from Supabase in one place.</p>
+      </article>
+      <div class="landing-grid">
+        <article class="landing-card">
+          <h3>Catalog View</h3>
+          <p>Show fruit names, pictures, pricing, and where to buy links in a clean storefront-style list.</p>
+        </article>
+        <article class="landing-card">
+          <h3>Buyer Tracking</h3>
+          <p>Link buyers to fruits and monitor purchase quantities without manual spreadsheet matching.</p>
+        </article>
+        <article class="landing-card">
+          <h3>Secure Access</h3>
+          <p>Log in with Supabase Auth to protect inventory and buyer data before anyone can edit content.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="foodView" class="grid view">
       <aside class="panel">
         <h2>Fruits</h2>
         <div id="recordsList" class="list">Loading...</div>
