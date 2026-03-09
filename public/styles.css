@@ -100,20 +100,23 @@ h1 {
 .list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 12px;
-  margin-bottom: 16px;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 10px;
+  margin-bottom: 14px;
 }
 
 .list-item {
   background: var(--panel-light);
   border: 1px solid transparent;
   border-radius: 12px;
-  padding: 12px;
+  padding: 8px 10px;
   text-align: left;
   color: var(--text);
   cursor: pointer;
   transition: border-color 0.2s ease, transform 0.2s ease;
+  width: 100%;
+  max-width: 280px;
 }
 
 .list-item:hover {
@@ -123,8 +126,8 @@ h1 {
 
 .list-item-row {
   display: grid;
-  grid-template-columns: 72px 1fr;
-  gap: 10px;
+  grid-template-columns: 56px 1fr;
+  gap: 8px;
   align-items: center;
 }
 
@@ -134,12 +137,14 @@ h1 {
 
 .list-title {
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
+  line-height: 1.2;
 }
 
 .list-meta {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
+  line-height: 1.2;
 }
 
 .kv-row {
@@ -184,8 +189,8 @@ h1 {
 }
 
 .thumb-sm {
-  width: 72px;
-  height: 56px;
+  width: 56px;
+  height: 42px;
 }
 
 .thumb-lg {
@@ -279,11 +284,11 @@ h1 {
   }
 
   .list-item-row {
-    grid-template-columns: 58px 1fr;
+    grid-template-columns: 52px 1fr;
   }
 
   .thumb-sm {
-    width: 58px;
-    height: 46px;
+    width: 52px;
+    height: 40px;
   }
 }
